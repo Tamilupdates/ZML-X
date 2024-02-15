@@ -1,4 +1,6 @@
-# Deploy to HEROKU
+# Deploy on Heroku
+
+[![Deploy on Heroku](https://www.herokucdn.com/deploy/button.svg)](https://dashboard.heroku.com/new?template=https://github.com/Tamilupdates/ZML-X)
 
 **Important Note**
 1. Upload all of your private files here: `config.env`, `token.pickle`, `rcl.conf`, `accounts.zip`, `shorteners.txt` etc...
