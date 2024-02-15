@@ -42,7 +42,7 @@ if DATABASE_URL:
 UPSTREAM_REPO = environ.get('UPSTREAM_REPO', '')
 log_info(f'Entered upstream repo: {UPSTREAM_REPO}')
 if len(UPSTREAM_REPO) == 0:
-    UPSTREAM_REPO = 'https://github.dev/Tamilupdates/ZML-X'
+    UPSTREAM_REPO = 'https://github.com/Tamilupdates/ZML-X'
 
 UPSTREAM_BRANCH = environ.get('UPSTREAM_BRANCH', '')
 log_info(f'Entered upstream branch: {UPSTREAM_BRANCH}')

@@ -7,7 +7,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 
 ## Deploy on Railway
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://github.dev/Tamilupdates/ZML-X/-/tree/hr_deploy?ref_type=heads#deploy-to-railway)
+[![Deploy on Railway](https://railway.app/button.svg)](https://github.com/Tamilupdates/ZML-X/-/tree/hr_deploy?ref_type=heads#deploy-to-railway)
 
 
 # Available features in this REPO:
