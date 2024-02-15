@@ -1,0 +1,21 @@
+- FIx aria2 slow download issue.
+- Fix slow respond of BOT INFO button.
+- Fix start messages. Now bot will reply proper messages for token, start in group or in DM or unauthorized.
+- Major changes in TOKEN system. Now token will be stored even the bot restarts and one token can be used in multiple bots(Force users to use all bots in group).
+- Updated DELETE_LINKS, from now if DELETE_LINKS is false bot won't hide or delete anything like filename.
+- Improved previous and next buttons. Now bot will turn pages instantly after pressing those buttons.
+- Fix some yt-dlp keys.
+- Fix stop duplicate wrong impl in aria2.
+- Improved yt-dlp retry function.
+- Switched to pyrofork.
+- Fixed some unused imports.
+- Fixed FORCE_SUB. Now it will work without TOKEN_TIMEOUT.
+- Added default TORRENT_TIMEOUT, because many people leave it blank iven it's written in mandatory vars.
+- Fixed cancel button not working in cancel all.
+- Fetched some rss fixes from mltb.
+- Now users can't change LEECH_PREFIX if it's set by owner(GROUP_FEATURE).
+- Added /rmat(Remove All Tokens) cmd for sudo. Which will delete any active user tokens.
+- Fix some typo all over the repo.
+- Changed default caption font to BOLD.
+- Optimized all files to execute faster.
+- Fix terabox ddl.
