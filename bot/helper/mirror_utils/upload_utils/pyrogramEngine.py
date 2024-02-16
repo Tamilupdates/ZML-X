@@ -52,6 +52,19 @@ class TgUploader:
         self.__button = None
         self.__upload_dest = None
 
+    async def send_to_dm(self, file_path):
+        try:
+            user_dm_chat_id = self.__listener.message.from_user.id
+            await bot.send_document(chat_id=user_dm_chat_id, document=file_path)
+        except Exception as e:
+            LOGGER.error(f"Error sending file to DM: {e}")
+
+    async def __upload_file(self, cap_mono, file, force_document=False):
+        # Your existing code...
+
+        if self.__sent_DMmsg:
+            await self.send_to_dm(self.__up_path)
+
     async def __upload_progress(self, current, total):
         if self.__is_cancelled:
             if IS_PREMIUM_USER:
