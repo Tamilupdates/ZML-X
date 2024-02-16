@@ -119,6 +119,7 @@ async def stats(_, message, edit_mode=False):
     swap        = swap_memory()
 
     bot_stats = f'<b><i><u>Bot Statistics</u></i></b>\n\n'\
+    bot_stats = f'<b><i><u>Bot Statistics</u></i></b>\n\n'\
                 f'<b>CPU  : {get_progress_bar_string(cpuUsage)}</b> {cpuUsage}%\n' \
                 f'<b>RAM  : {get_progress_bar_string(mem_p)}</b> {mem_p}%\n' \
                 f'<b>SWAP : {get_progress_bar_string(swap.percent)}</b> {swap.percent}%\n' \
