@@ -119,15 +119,14 @@ async def stats(_, message, edit_mode=False):
     swap        = swap_memory()
 
     bot_stats = f'<b><i><u>Bot Statistics</u></i></b>\n\n'\
-                f'<code>CPU  : {get_progress_bar_string(cpuUsage)}</code> {cpuUsage}%\n' \
-                f'<code>RAM  : {get_progress_bar_string(mem_p)}</code> {mem_p}%\n' \
-                f'<code>SWAP : {get_progress_bar_string(swap.percent)}</code> {swap.percent}%\n' \
-                f'<code>DISK : {get_progress_bar_string(disk)}</code> {disk}%\n\n' \
-                f'<code>Bot Uptime      : </code> {botTime}\n' \
-                f'<code>BOT Restart     : </code> {res_time}\n\n' \
-                f'<code>Uploaded        : </code> {sent}\n' \
-                f'<code>Downloaded      : </code> {recv}\n' \
-                f'<code>Total Bandwidth : </code> {tb}'
+                f'<b>CPU  : {get_progress_bar_string(cpuUsage)}</b> {cpuUsage}%\n' \
+                f'<b>RAM  : {get_progress_bar_string(mem_p)}</b> {mem_p}%\n' \
+                f'<b>SWAP : {get_progress_bar_string(swap.percent)}</b> {swap.percent}%\n' \
+                f'<b>DISK : {get_progress_bar_string(disk)}</b> {disk}%\n\n' \
+                f'<b>Bot Uptime      : </b> {botTime}\n' \
+                f'<b>Uploaded        : </b> {sent}\n' \
+                f'<b>Downloaded      : </b> {recv}\n' \
+                f'<b>Total Bandwidth : </b> {tb}'
 
     sys_stats = f'<b><i><u>System Statistics</u></i></b>\n\n'\
                 f'<b>System Uptime:</b> <code>{sysTime}</code>\n' \
