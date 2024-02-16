@@ -69,10 +69,10 @@ async def cancel_all(status, info, listOfTasks):
     msg = info[1]
     tag = info[3]
     success = 0
-    failed = 0
-    _msg =  f"<b>User id</b>: {user_id}\n" if user_id else "<b>Everyone</b>\n"
-    _msg += f"<b>Status</b>: {status}\n"
-    _msg += f"<b>Total</b>: {len(listOfTasks)}\n"
+    failed = 
+    _msg = f"<b>💡 User ID</b>: {user_id}\n" if user_id else "<b>Everyone</b>\n"
+    _msg += f"<b>🔄 Status</b>: {status}\n"
+    _msg += f"<b>📂 Total</b>: {len(listOfTasks)}\n"
     for dl in listOfTasks:
         try:
             obj = dl.download()
@@ -81,8 +81,8 @@ async def cancel_all(status, info, listOfTasks):
             await sleep(1)
         except:
             failed += 1
-        new_msg = f"<b>Success</b>: {success}\n"
-        new_msg += f"<b>Failed</b>: {failed}\n"
+        new_msg = f"<b>✅ Success</b>: {success}\n"
+        new_msg += f"<b>⛔ Failed</b>: {failed}\n"
         new_msg += f"<b>#cancel_all</b> : {tag}"
         emsg = await editMessage(msg, _msg+new_msg)
         await auto_delete_message(msg, emsg)
