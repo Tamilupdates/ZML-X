@@ -8,7 +8,7 @@ from os import getcwd, path as ospath
 from re import sub as re_sub
 from time import time
 
-from aiofiles.os import makedirs, path as aiopath, remove as aioremove
+from aiofiles.os import mkdir, path as aiopath, remove as aioremove
 from PIL import Image
 
 from pyrogram.filters import command, create, regex
@@ -34,7 +34,7 @@ async def get_user_settings(from_user):
     name        = from_user.mention
     buttons     = ButtonMaker()
     thumbpath   = f"Thumbnails/{user_id}.jpg"
-    rclone_path = f'rcl/{user_id}.conf'
+    rclone_path = f'rclone/{user_id}.conf'
     user_dict   = user_data.get(user_id, {})
     if user_dict.get('as_doc', False) or 'as_doc' not in user_dict and config_dict['AS_DOCUMENT']:
         ltype = "DOCUMENT"
@@ -43,7 +43,42 @@ async def get_user_settings(from_user):
         ltype = "MEDIA"
         buttons.ibutton("Send As Document", f"userset {user_id} doc")
 
-    buttons.ibutton("Leech Splits", f"userset {user_id} lss")
+    buttons.ibutton("Thumbnail", f"userset {user_id} sthumb")
+    thumbmsg = "Exists" if await aiopath.exists(thumbpath) else "Not Exists"
+
+    buttons.ibutton("Leech Prefix", f"userset {user_id} lprefix")
+    if user_dict.get('lprefix', False):
+        lprefix = user_dict['lprefix']
+    elif 'lprefix' not in user_dict and (LP := config_dict['LEECH_FILENAME_PREFIX']):
+        lprefix = LP
+    else:
+        lprefix = 'None'
+
+    buttons.ibutton("Leech Remname", f"userset {user_id} lremname")
+    if user_dict.get('lremname', False):
+        lremname = user_dict['lremname']
+    elif 'lremname' not in user_dict and (LRU := config_dict['LEECH_REMOVE_UNWANTED']):
+        lremname = LRU
+    else:
+        lremname = 'None'
+
+    buttons.ibutton("User Dump", f"userset {user_id} user_dump")
+    if user_dict.get('user_dump', False):
+        user_dump = user_dict['user_dump']
+    elif 'user_dump' not in user_dict and (UD := config_dict['USER_DUMP']):
+        user_dump = UD
+    else:
+        user_dump = 'None'
+
+    buttons.ibutton("YT-DLP Options", f"userset {user_id} yto")
+    if user_dict.get('yt_opt', False):
+        ytopt = user_dict['yt_opt']
+    elif 'yt_opt' not in user_dict and (YTO := config_dict['YT_DLP_OPTIONS']):
+        ytopt = YTO
+    else:
+        ytopt = 'None'
+
+#    buttons.ibutton("Leech Splits", f"userset {user_id} lss")
     split_size = user_dict.get(
         'split_size', False) or config_dict['LEECH_SPLIT_SIZE']
     split_size = get_readable_file_size(split_size)
@@ -58,43 +93,8 @@ async def get_user_settings(from_user):
     else:
         media_group = 'Disabled'
 
-    buttons.ibutton("YT-DLP Options", f"userset {user_id} yto")
-    if user_dict.get('yt_opt', False):
-        ytopt = user_dict['yt_opt']
-    elif 'yt_opt' not in user_dict and (YTO := config_dict['YT_DLP_OPTIONS']):
-        ytopt = YTO
-    else:
-        ytopt = 'None'
-
-    buttons.ibutton("Leech Prefix", f"userset {user_id} lprefix")
-    if user_dict.get('lprefix', False):
-        lprefix = user_dict['lprefix']
-    elif 'lprefix' not in user_dict and (LP := config_dict['LEECH_FILENAME_PREFIX']):
-        lprefix = LP
-    else:
-        lprefix = 'None'
-
-    buttons.ibutton("Thumbnail", f"userset {user_id} sthumb")
-    thumbmsg = "Exists" if await aiopath.exists(thumbpath) else "Not Exists"
-
-    buttons.ibutton("Rclone", f"userset {user_id} rcc")
+#    buttons.ibutton("Rclone", f"userset {user_id} rcc")
     rccmsg = "Exists" if await aiopath.exists(rclone_path) else "Not Exists"
-
-    buttons.ibutton("User Dump", f"userset {user_id} user_dump")
-    if user_dict.get('user_dump', False):
-        user_dump = user_dict['user_dump']
-    elif 'user_dump' not in user_dict and (UD := config_dict['USER_DUMP']):
-        user_dump = UD
-    else:
-        user_dump = 'None'
-
-    buttons.ibutton("Leech Remove Unwanted", f"userset {user_id} lremname")
-    if user_dict.get('lremname', False):
-        lremname = user_dict['lremname']
-    elif 'lremname' not in user_dict and (LRU := config_dict['LEECH_REMOVE_UNWANTED']):
-        lremname = LRU
-    else:
-        lremname = 'None'
 
     if user_dict:
         buttons.ibutton("Reset Setting", f"userset {user_id} reset_all")
@@ -102,23 +102,18 @@ async def get_user_settings(from_user):
     buttons.ibutton("Close", f"userset {user_id} close")
 
     text = f"""
-<u>User Settings of {name}</u>
+<b><u>User Settings of {name}</u></b>
 
-<code>TG Premium Status:</code> <b>{IS_PREMIUM_USER}</b>
+<b>Premium Status : {IS_PREMIUM_USER}</b>
+<b>Leech Split Size : {split_size}</b>
+<b>Leech Type : {ltype}</b>
 
-<code>Leech Type       :</code> <b>{ltype}</b>
-<code>Leech Prefix     :</code> <b>{escape(lprefix)}</b>
-<code>Leech Split Size :</code> <b>{split_size}</b>
-
-<code>Equal Splits     :</code> <b>{equal_splits}</b>
-<code>Thumbnail        :</code> <b>{thumbmsg}</b>
-<code>Media Group      :</code> <b>{media_group}</b>
-
-<code>YT-DLP Options   :</code> <b>{escape(ytopt)}</b>
-<code>Rclone Config    :</code> <b>{rccmsg}</b>
-
-<code>User Dump        :</code> <b>{user_dump}</b>
-<code>Remove Unwanted  :</code> <b>{lremname}</b>
+<b>Thumbnail :</b> <code>{thumbmsg}</code>
+<b>Leech Prefix :</b> <code>{escape(lprefix)}</code>
+<b>Leech Remname :</b> <code>{lremname}</code>
+<b>User Dump :</b> <code>{user_dump}</code>
+<b>Media Group :</b> <code>{media_group}</code>
+<b>YT-DLP Options :</b> <code>{escape(ytopt)}</code>
 """
     return text, buttons.build_menu(1)
 
@@ -128,7 +123,7 @@ async def update_user_settings(query):
     user_id = query.from_user.id
     tpath = f"Thumbnails/{user_id}.jpg"
     if not ospath.exists(tpath):
-        tpath = "https://graph.org/file/25545597de34c640b31d6.jpg"
+        tpath = "https://graph.org/file/78c1c0d31f4d95c87b277.jpg"
     await query.message.edit_media(
         media=InputMediaPhoto(media=tpath, caption=msg), reply_markup=button)
 
@@ -138,7 +133,7 @@ async def user_settings(_, message):
     user_id = message.from_user.id
     tpath = f"Thumbnails/{user_id}.jpg"
     if not ospath.exists(tpath):
-        tpath = "https://graph.org/file/25545597de34c640b31d6.jpg"
+        tpath = "https://graph.org/file/78c1c0d31f4d95c87b277.jpg"
     usetMsg = await message.reply_photo(tpath, caption=msg, reply_markup=button)
     await auto_delete_message(message, usetMsg)
 
@@ -170,7 +165,8 @@ async def set_thumb(_, message, pre_event):
     user_id = message.from_user.id
     handler_dict[user_id] = False
     path = "Thumbnails/"
-    await makedirs(path, exist_ok=True)
+    if not await aiopath.isdir(path):
+        await mkdir(path)
     photo_dir = await message.download()
     des_dir = ospath.join(path, f'{user_id}.jpg')
     await sync_to_async(Image.open(photo_dir).convert("RGB").save, des_dir, "JPEG")
@@ -185,11 +181,12 @@ async def set_thumb(_, message, pre_event):
 async def add_rclone(_, message, pre_event):
     user_id = message.from_user.id
     handler_dict[user_id] = False
-    path = f'{getcwd()}/rcl/'
-    await makedirs(path, exist_ok=True)
+    path = f'{getcwd()}/rclone/'
+    if not await aiopath.isdir(path):
+        await mkdir(path)
     des_dir = ospath.join(path, f'{user_id}.conf')
     await message.download(file_name=des_dir)
-    update_user_ldata(user_id, 'rclone', f'rcl/{user_id}.conf')
+    update_user_ldata(user_id, 'rclone', f'rclone/{user_id}.conf')
     await message.delete()
     await update_user_settings(pre_event)
     if DATABASE_URL:
@@ -262,7 +259,7 @@ async def edit_user_settings(client, query):
     message     = query.message
     data        = query.data.split()
     thumb_path  = f'Thumbnails/{user_id}.jpg'
-    rclone_path = f'rcl/{user_id}.conf'
+    rclone_path = f'rclone/{user_id}.conf'
     user_dict   = user_data.get(user_id, {})
     if user_id != int(data[1]):
         await query.answer("Not Yours!", show_alert=True)
@@ -396,14 +393,11 @@ Timeout: 60 sec
             buttons.ibutton("Close", f"userset {user_id} close")
         rmsg = f'''
 Send Leech Prefix. Timeout: 60 sec
-Examples:
-1. <code>{escape('<b>Join: @Z_Mirror</b>')}</code> 
-This will give output as:
-<b>Join: @Z_Mirror</b>  <code>69MB.bin</code>.
 
-2. <code>{escape('<code>Join: @Z_Mirror</code>')}</code> 
+Examples:
+1. <code>{escape('@Channel_Name')}</code> 
 This will give output as:
-<code>Join: @Z_Mirror</code> <code>69MB.bin</code>.
+<code>@Channel_Name Avatar 2 (2023) English 700MB.mkv</code>.
 
 Check all available formatting options <a href="https://core.telegram.org/bots/api#formatting-options">HERE</a>.
         '''
@@ -445,13 +439,13 @@ Timeout: 60 sec
         await query.answer()
         buttons = ButtonMaker()
         if user_dict.get('lremname', False) or config_dict['LEECH_REMOVE_UNWANTED']:
-            buttons.ibutton("Remove Leech Unwanted",f"userset {user_id} rlremname")
+            buttons.ibutton("Leech Remname",f"userset {user_id} rlremname")
         buttons.ibutton("Back", f"userset {user_id} back")
         buttons.ibutton("Close", f"userset {user_id} close")
         rmsg = f'''
-<b>Send Leech Unwanted</b>
+<b>Send Leech Remname</b>
 
-Examples: <code>mltb|jmdkh|wzml</code>
+Examples: <code>mltb|wzml</code>
 This will remove if any of those words found in filename.
 
 Timeout: 60 sec
@@ -485,7 +479,7 @@ Timeout: 60 sec
         user_id = int(data[3])
         await query.answer()
         thumb_path = f'Thumbnails/{user_id}.jpg'
-        rclone_path = f'rcl/{user_id}.conf'
+        rclone_path = f'rclone/{user_id}.conf'
         if await aiopath.exists(thumb_path):
             await aioremove(thumb_path)
         if await aiopath.exists(rclone_path):

@@ -45,16 +45,20 @@ async def countNode(_, message):
             await delete_links(message)
             await auto_delete_message(message, mssg)
             return
-        await deleteMessage(mssg)
-        msg = f'<b>File Name</b>: <code>{name}</code>'
-        msg += f'\n\n<b>Size</b>: {get_readable_file_size(size)}'
-        msg += f'\n<b>Type</b>: {mime_type}'
+        await deleteMessage(msg)
+        msg = f'<b>🗂️ Name</b>: {name}'
+        msg += f'\n\n<b>📦 Size</b>: {get_readable_file_size(size)}'
+        msg += f'\n<b>♻ Type</b>: {mime_type}'
         if mime_type == 'Folder':
-            msg += f'\n<b>SubFolders</b>: {folders}'
-            msg += f'\n<b>Files</b>: {files}'
-        msg += f'\n<b>Elapsed</b>: {get_readable_time(elapsed)}'
-        msg += f'\n\n<b>cc</b>: {tag}'
-        msg += f'\nThanks For Using <b>@Z_Mirror</b>'
+            msg += f'\n<b>🗃️ SubFolders</b>: {folders}'
+            msg += f'\n<b>🗂️ Files</b>: {files}'
+        msg += f'\n<b>⏳ Elapsed</b>: {get_readable_time(elapsed)}'
+        msg += f'\n\n<b>👤 Added </b>: {tag}'
+    else:
+        msg = 'Send Gdrive link along with command or by replying to the link by command'
+    if config_dict['DELETE_LINKS']:
+        await deleteMessage(message.reply_to_message)
+    await sendMessage(message, msg)
         
     else:
         msg = f'Send Gdrive link along with command or by replying to the link by command\n\n<b>cc</b>: {tag}'

@@ -73,8 +73,6 @@ Check all yt-dlp api options from this <a href='https://github.com/yt-dlp/yt-dlp
 9. <code>-o</code> or <code>-opt</code> or <code>-options</code> to add yt-dlp options.
 10.<code>-up</code> to upload to your drive.
 11.<code>-rcf</code> to add rclone flags.
-
-<b>Powered By @Z_Mirror</b>
 """
 
 MIRROR_HELP_MESSAGE = """
@@ -163,8 +161,6 @@ Some links need user access so sure you must add USER_SESSION_STRING for it.
 <b><u>NOTES</u></b>:
 1. Commands that start with <b>qb</b> are ONLY for torrents.
 2. Read all arguments <a href='https://graph.org/Z-Mirror-Bot-Arguments-06-10'>HERE</a>.
-
-<b>Powered By @Z_Mirror</b>
 """
 
 RSS_HELP_MESSAGE = """
@@ -188,8 +184,6 @@ This filter will parse links that it's titles contains `(1080 or 720 or 144p) an
 3. You can add `or` and `|` as much as you want."
 4. Take look on title if it has static special character after or before the qualities or extensions or whatever and use them in filter to avoid wrong match.
 Timeout: 60 sec.
-
-<b>Powered By @Z_Mirror</b>
 """
 
 CLONE_HELP_MESSAGE = """
@@ -209,8 +203,6 @@ drive_id must be folder id and index must be url else it will not accept
 <code>/{cmd}</code> (rcl or rclone_path) -up (rcl or rclone_path) -rcf flagkey:flagvalue|flagkey|flagkey:flagvalue
 
 <b><u>Note</u></b>: If -up not specified then rclone destination will be the RCLONE_PATH from config.env
-
-<b>Powered By @Z_Mirror</b>
 """
 
 CAT_SEL_HELP_MESSAGE = """
@@ -222,8 +214,6 @@ But you can always use /{mir} with to select category before download start.
 <b><u>Upload Custom Drive</u></b>
 <code>/{cmd}</code> -id <code>drive_folder_link</code> or <code>drive_id</code> -index <code>https://anything.in/0:</code> gid or by replying to active download
 drive_id must be folder id and index must be url else it will not accept.
-
-<b>Powered By @Z_Mirror</b>
 """
 
 TOR_SEL_HELP_MESSAGE = """
@@ -231,8 +221,6 @@ TOR_SEL_HELP_MESSAGE = """
 Reply to an active <code>/{cmd}</code> which was used to start the qb-download or add gid along with cmd\n\n
 This command mainly for selection incase you decided to select files from already added torrent.
 But you can always use <code>/{mir}</code> with arg `-s` to select files before download start.
-
-<b>Powered By @Z_Mirror</b>
 """
 
 PASSWORD_ERROR_MESSAGE = """
