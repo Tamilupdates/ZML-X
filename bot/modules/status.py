@@ -218,14 +218,14 @@ async def send_repo_stats(_, query):
 
     repo_stats = f'<b><i><u>Repository Info</u></i></b> \n\n' \
                  f'<b><i>Official Repository</i></b>        \n'   \
-                 f'<code>- Updated   : </code> {commit_date}\n'   \
-                 f'<code>- Version   : </code> {vtag}       \n'   \
-                 f'<code>- Changelog : </code> {c_log}      \n'   \
-                 f'<code>- Desc      : </code> {d_log}      \n'   \
+                 f'<b>- Updated   : </b> {commit_date}\n'   \
+                 f'<b>- Version   : </b> {vtag}       \n'   \
+                 f'<b>- Changelog : </b> {c_log}      \n'   \
+                 f'<b>- Desc      : </b> {d_log}      \n\n' \
                  f'<b><i>Bot Repository</i></b>             \n'   \
-                 f'<code>- Updated   : </code> {last_commit}\n'   \
-                 f'<code>- Version   : </code> {version}    \n'   \
-                 f'<code>- Changelog : </code> {change_log} \n\n' \
+                 f'<b>- Updated   : </b> {last_commit}\n'   \
+                 f'<b>- Version   : </b> {version}    \n'   \
+                 f'<b>- Changelog : </b> {change_log} \n\n' \
                  f'<b>{update_info}</b>'
 
     buttons.ibutton("Bot Stats",  "show_bot_stats")
