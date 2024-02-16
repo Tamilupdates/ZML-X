@@ -71,7 +71,7 @@ async def start(_, message):
 
 
 async def restart(_, message):
-    restart_message = await sendMessage(message, "Restarting...")
+    restart_message = await sendMessage(message, "<b>Restarting...</b>")
     if scheduler.running:
         scheduler.shutdown(wait=False)
     for interval in [QbInterval, Interval]:
@@ -93,7 +93,7 @@ async def ping(_, message):
     await editMessage(reply, f'{ping_time} ms')
 
 async def log(_, message):
-    await sendFile(message, 'Z_Logs.txt')
+    await sendFile(message, 'Logs.txt')
 
 help_string = f'''
 <b>NOTE: Click on any CMD to see more detalis.</b>
@@ -182,8 +182,8 @@ async def restart_notification():
 
     async def send_incompelete_task_message(cid, msg):
         try:
-            if msg.startswith('Restarted Successfully!'):
-                await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text='Restarted Successfully!')
+            if msg.startswith('<b>Restarted Successfully!</b>'):
+                await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text='<b>Restarted Successfully!</b>')
                 await bot.send_message(chat_id, msg, disable_web_page_preview=True, reply_to_message_id=msg_id)
                 await aioremove(".restartmsg")
             else:
@@ -194,9 +194,9 @@ async def restart_notification():
     if DATABASE_URL:
         if INCOMPLETE_TASK_NOTIFIER and (notifier_dict := await DbManager().get_incomplete_tasks()):
             for cid, data in notifier_dict.items():
-                msg = 'Restarted Successfully!' if cid == chat_id else 'Bot Restarted!'
+                msg = '<b>Restarted Successfully!</b>' if cid == chat_id else '<b>Bot Restarted!</b>'
                 for tag, links in data.items():
-                    msg += f"\n\n👤 {tag} Do your tasks again. \n"
+                    msg += f"\n👤 {tag} Do your tasks again. \n"
                     for index, link in enumerate(links, start=1):
                         msg += f" {index}: {link} \n"
                         if len(msg.encode()) > 4000:
@@ -211,7 +211,7 @@ async def restart_notification():
 
     if await aiopath.isfile(".restartmsg"):
         try:
-            await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text='Restarted Successfully!')
+            await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text='<b>Restarted Successfully!</b>')
         except:
             pass
         await aioremove(".restartmsg")

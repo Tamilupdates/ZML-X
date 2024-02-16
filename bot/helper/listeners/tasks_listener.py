@@ -393,31 +393,30 @@ class MirrorLeechListener:
             await update_all_messages()
             await RCTransfer.upload(up_path, size)
 
-    async def onUploadComplete(self, link, size, files, folders, mime_type, name, rclonePath='', dir_id=''):
+    async def onUploadComplete(self, link, size, files, folders, mime_type, name, rclonePath=''):
         if DATABASE_URL and config_dict['STOP_DUPLICATE_TASKS'] and self.raw_url:
             await DbManager().remove_download(self.raw_url)
         if self.isSuperGroup and config_dict['INCOMPLETE_TASK_NOTIFIER'] and DATABASE_URL:
             await DbManager().rm_complete_task(self.message.link)
         LOGGER.info(f'Done Uploading {name}')
-        lmsg = f'<b><i>{escape(name)}</i></b>'
-        lmsg += f'\n<b>cc</b>: <i>{self.tag}</i>'
-        gmsg = f'Hey <b>{self.tag}</b>!\nYour job is done.'
-        msg = f'\n\n<code>Size            </code>: {get_readable_file_size(size)}'
-        msg += f"\n<code>Elapsed         </code>: {get_readable_time(time() - self.extra_details['startTime'])}"
-        msg += f"\n<code>Upload          </code>: {self.extra_details['mode']}"
-        _msg = '' if rclonePath == '' else f'\n\n<code>Path            </code>: {rclonePath}'
+        gmsg = f'<b>✅ Your job is done.</b>'
+        msg = f'\n\n<b>🗂️ Name </b>: <code>{escape(name)}</code>'
+        msg += f'\n<b>📦 Size </b>: {get_readable_file_size(size)}'
+        msg += f"\n<b>⏳ Elapsed </b>: {get_readable_time(time() - self.extra_details['startTime'])}"
+        msg += f"\n<b>📤 Upload </b>: {self.extra_details['mode']}"
+        _msg = '' if rclonePath == '' else f'\n\n<b>Path </b>: {rclonePath}'
         msg_ = '\n\n<b><i>Link has been sent in your DM.</i></b>'
         buttons = ButtonMaker()
         if self.isLeech:
-            msg += f'\n<code>Total Files     </code>: {folders}\n'
+            msg += f'\n<b>📂 Total Files </b>: {folders}\n'
             if mime_type != 0:
-                msg += f'<code>Corrupted Files</code> : {mime_type}\n'
+                msg += f'<b>❌ Corrupted Files</b> : {mime_type}\n'
             msg_ = '\n<b><i>Files has been sent in your DM.</i></b>'
             if not self.dmMessage:
                 if not files:
-                    await sendMessage(self.message, lmsg + msg)
+                    await sendMessage(self.message, msg)
                     if self.logMessage:
-                        await sendMessage(self.logMessage, lmsg + msg)
+                        await sendMessage(self.logMessage,  msg)
                 else:
                     fmsg = '\n'
                     for index, (link, name) in enumerate(files.items(), start=1):
@@ -437,24 +436,23 @@ class MirrorLeechListener:
                     await sendMessage(self.message, gmsg + msg + msg_)
                     if self.logMessage:
                         await sendMessage(self.logMessage, lmsg + msg)
-                elif self.dmMessage and not config_dict['DUMP_CHAT_ID']:
+                elif self.dmMessage and not config_dict['LEECH_LOG']:
                     await sendMessage(self.dmMessage, lmsg + msg)
                     await sendMessage(self.message, gmsg + msg + msg_)
                     if self.logMessage:
                         await sendMessage(self.logMessage, lmsg + msg)
                 else:
                     fmsg = '\n'
-                    for index, (link, name) in enumerate(files.items(), start=1):
-                        fmsg += f"{index}. <a href='{link}'>{name}</a>\n"
-                        if len(fmsg.encode() + msg.encode()) > 4000:
-                            if self.logMessage:
-                                await sendMessage(self.logMessage, lmsg + msg + fmsg)
-                            await sendMessage(self.dmMessage, gmsg + msg + fmsg)
-                            await sleep(1)
-                            fmsg = '\n'
+                    fmsg+= f'<b>👤 Added By </b>: {self.tag}'
+                    if len(fmsg.encode() + msg.encode()) > 4000:
+                        if self.logMessage:
+                            await sendMessage(self.logMessage, msg + fmsg)
+                        await sendMessage(self.dmMessage, gmsg + msg + fmsg)
+                        await sleep(1)
+                        fmsg = '\n'
                     if fmsg != '\n':
                         if self.logMessage:
-                            await sendMessage(self.logMessage, lmsg + msg + fmsg)
+                            await sendMessage(self.logMessage, msg + fmsg)
                         await sendMessage(self.message, gmsg + msg + msg_)
                         await sendMessage(self.dmMessage, gmsg + msg + fmsg)
             if self.seed:
@@ -550,9 +548,10 @@ class MirrorLeechListener:
                 self.sameDir['tasks'].remove(self.uid)
                 self.sameDir['total'] -= 1
         msg = f"Sorry {self.tag}!\nYour download has been stopped."
-        msg += f"\n\n<code>Reason  </code>: {escape(str(error))}"
-        msg += f"\n<code>Elapsed </code>: {get_readable_time(time() - self.extra_details['startTime'])}"
-        msg += f"\n<code>Upload  </code>: {self.extra_details['mode']}"
+        msg += f"\n\n<b>🗯 Reason  </b>: {escape(str(error))}"
+        msg += f"\n<b>⏳ Elapsed </b>: {get_readable_time(time() - self.extra_details['startTime'])}"
+        msg += f"\n<b>📤 Upload  </b>: {self.extra_details['mode']}"
+        msg += f'\n<b>👤 Added </b>: {self.tag}'
         tlmsg = await sendMessage(self.message, msg, button)
         if self.logMessage:
             await sendMessage(self.logMessage, msg, button)
@@ -594,8 +593,9 @@ class MirrorLeechListener:
             if self.uid in self.sameDir:
                 self.sameDir.remove(self.uid)
         msg = f"{self.tag} {escape(str(error))}"
-        msg += f"\n<code>Elapsed </code>: {get_readable_time(time() - self.extra_details['startTime'])}"
-        msg += f"\n<code>Upload  </code>: {self.extra_details['mode']}"
+        msg += f"\n<b>⏳ Elapsed </b>: {get_readable_time(time() - self.extra_details['startTime'])}"
+        msg += f"\n<b>📤 Upload  </b>: {self.extra_details['mode']}"
+        msg += f'\n<b>👤 Added </b>: {self.tag}'
         tlmsg = await sendMessage(self.message, msg)
         if self.logMessage:
             await sendMessage(self.logMessage, msg)

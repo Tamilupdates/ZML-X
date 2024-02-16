@@ -77,14 +77,14 @@ class TgUploader:
         self.__upload_dest = user_dict.get('user_dump') or config_dict['USER_DUMP']
 
     async def __msg_to_reply(self):
-        if DUMP_CHAT_ID := config_dict['DUMP_CHAT_ID']:
+        if LEECH_LOG := config_dict['LEECH_LOG']:
             if self.__listener.logMessage:
-                self.__sent_msg = await self.__listener.logMessage.copy(DUMP_CHAT_ID)
+                self.__sent_msg = await self.__listener.logMessage.copy(LEECH_LOG)
             else:
                 msg = f'<b>File Name</b>: <code>{escape(self.name)}</code>\n\n<b>#Leech_Completed</b>!\n'
                 msg += f'<b>Done By</b>: {self.__listener.tag}\n'
                 msg += f'<b>User ID</b>: <code>{self.__listener.message.from_user.id}</code>'
-                self.__sent_msg = await bot.send_message(DUMP_CHAT_ID, msg, disable_web_page_preview=True)
+                self.__sent_msg = await bot.send_message(LEECH_LOG, msg, disable_web_page_preview=True)
             if self.__listener.dmMessage:
                 self.__sent_DMmsg = self.__listener.dmMessage
             if IS_PREMIUM_USER:
@@ -188,7 +188,7 @@ class TgUploader:
                 del self.__msgs_dict[msg.link]
             await deleteMessage(msg)
         del self.__media_dict[key][subkey]
-        if self.__listener.isSuperGroup or config_dict['DUMP_CHAT_ID']:
+        if self.__listener.isSuperGroup or config_dict['LEECH_LOG']:
             for m in msgs_list:
                 self.__msgs_dict[m.link] = m.caption
         self.__sent_msg = msgs_list[-1]
@@ -244,7 +244,7 @@ class TgUploader:
                     await self.__upload_file(cap_mono, file_)
                     if self.__is_cancelled:
                         return
-                    if not self.__is_corrupted and (self.__listener.isSuperGroup or config_dict['DUMP_CHAT_ID']):
+                    if not self.__is_corrupted and (self.__listener.isSuperGroup or config_dict['LEECH_LOG']):
                         self.__msgs_dict[self.__sent_msg.link] = file_
                     await sleep(1)
                 except Exception as err:
@@ -278,7 +278,7 @@ class TgUploader:
         if self.__total_files <= self.__corrupted:
             await self.__listener.onUploadError('Files Corrupted or unable to upload.')
             return
-        if config_dict['DUMP_CHAT_ID']:
+        if config_dict['LEECH_LOG']:
             msg = f'<b>File Name</b>: <code>{escape(self.name)}</code>\n\n'
             msg += f'<b>LeechCompleted</b>!\n<b>Done By</b>: {self.__listener.tag}\n'
             msg += f'<b>User ID</b>: <code>{self.__listener.message.from_user.id}</code>'

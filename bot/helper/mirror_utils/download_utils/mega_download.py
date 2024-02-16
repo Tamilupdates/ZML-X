@@ -127,7 +127,7 @@ async def add_mega_download(mega_link, path, listener, name):
     MEGA_PASSWORD = config_dict['MEGA_PASSWORD']
 
     executor = AsyncExecutor()
-    api = MegaApi(None, None, None, 'Z-Mirror')
+    api = MegaApi(None, None, None, 'KPS Bots')
     folder_api = None
 
     mega_listener = MegaAppListener(executor.continue_event, listener)
@@ -140,7 +140,7 @@ async def add_mega_download(mega_link, path, listener, name):
         await sync_to_async(executor.do, api.getPublicNode, (mega_link,))
         node = mega_listener.public_node
     else:
-        folder_api = MegaApi(None, None, None, 'Z-Mirror')
+        folder_api = MegaApi(None, None, None, 'KPS Bots')
         folder_api.addListener(mega_listener)
         await sync_to_async(executor.do, folder_api.loginToFolder, (mega_link,))
         node = await sync_to_async(folder_api.authorizeNode, mega_listener.node)

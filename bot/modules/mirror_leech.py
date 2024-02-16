@@ -253,8 +253,8 @@ async def _mirror_leech(client, message, isQbit=False, isLeech=False, sameDir=No
         if none_admin_msg:
             error_msg.extend(none_admin_msg)
     if (dmMode := config_dict['DM_MODE']) and message.chat.type == message.chat.type.SUPERGROUP:
-        if isLeech and IS_PREMIUM_USER and not config_dict['DUMP_CHAT_ID']:
-            error_msg.append('DM_MODE and User Session need DUMP_CHAT_ID')
+        if isLeech and IS_PREMIUM_USER and not config_dict['LEECH_LOG']:
+            error_msg.append('DM_MODE and User Session need LEECH_LOG')
         dmMessage, error_button = await isBot_canDm(message, dmMode, isLeech, error_button)
         if dmMessage is not None and dmMessage != 'BotStarted':
             error_msg.append(dmMessage)

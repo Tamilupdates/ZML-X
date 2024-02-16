@@ -13,13 +13,13 @@ from web.nodes import make_tree
 app = Flask(__name__)
 
 basicConfig(format='%(levelname)s | From %(name)s -> %(module)s line no: %(lineno)d | %(message)s',
-                    handlers=[FileHandler('Z_Logs.txt'), StreamHandler()], level=INFO)
+                    handlers=[FileHandler('Logs.txt'), StreamHandler()], level=INFO)
 
 aria2 = ariaAPI(ariaClient(host="http://localhost", port=6800, secret=""))
 
 LOGGER = getLogger(__name__)
 
-rawowners = "<h1 style='text-align: center'>See my Channel <a href='https://telegram.me/KPSBots'>@Telegram</a><br><br>By<br><br><a href='https://github.com/Tamilupdates/ZML-X'>Z Mirror</a></h1>"
+rawowners = "<h1 style='text-align: center'>See my Channel <a href='https://telegram.me/KPSBots'>@Telegram</a></h1>"
 
 pin_entry = '''
     <section>
@@ -84,7 +84,6 @@ rawindexpage = '''
         </div>
         <h2 class="name">Qbittorrent Selection</h2>
         <div class="social">
-            <a href="https://www.github.com/Dawn-India/Z-Mirror"><i class="fab fa-github"></i></a>
             <a href="https://telegram.me/KPSBots"><i class="fab fa-telegram"></i></a>
         </div>
     </header>

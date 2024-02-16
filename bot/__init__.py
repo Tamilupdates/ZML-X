@@ -28,7 +28,7 @@ setdefaulttimeout(600)
 botStartTime = time()
 
 basicConfig(format='%(levelname)s | From %(name)s -> %(module)s line no: %(lineno)d | %(message)s',
-                    handlers=[FileHandler('Z_Logs.txt'), StreamHandler()], level=INFO)
+                    handlers=[FileHandler('Logs.txt'), StreamHandler()], level=INFO)
 
 LOGGER = getLogger(__name__)
 
@@ -259,8 +259,8 @@ if len(YT_DLP_OPTIONS) == 0:
 SEARCH_LIMIT = environ.get('SEARCH_LIMIT', '')
 SEARCH_LIMIT = 0 if len(SEARCH_LIMIT) == 0 else int(SEARCH_LIMIT)
 
-DUMP_CHAT_ID = environ.get('DUMP_CHAT_ID', '')
-DUMP_CHAT_ID = '' if len(DUMP_CHAT_ID) == 0 else int(DUMP_CHAT_ID)
+LEECH_LOG = environ.get('LEECH_LOG', '')
+LEECH_LOG = '' if len(LEECH_LOG) == 0 else int(LEECH_LOG)
 
 STATUS_LIMIT = environ.get('STATUS_LIMIT', '')
 STATUS_LIMIT = 5 if len(STATUS_LIMIT) == 0 else int(STATUS_LIMIT)
@@ -433,7 +433,7 @@ config_dict = {
     "DATABASE_URL": DATABASE_URL,
     "DEFAULT_UPLOAD": DEFAULT_UPLOAD,
     "DOWNLOAD_DIR": DOWNLOAD_DIR,
-    "DUMP_CHAT_ID": DUMP_CHAT_ID,
+    "LEECH_LOG": LEECH_LOG,
     "EQUAL_SPLITS": EQUAL_SPLITS,
     "EXTENSION_FILTER": EXTENSION_FILTER,
     "FILELION_API": FILELION_API,
