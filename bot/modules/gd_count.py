@@ -31,19 +31,13 @@ async def countNode(_, message):
         link = reply_to.text.split(maxsplit=1)[0].strip()
 
     if is_gdrive_link(link):
+        msg = await sendMessage(message, f"Counting: <code>{link}</code>")
+        gd = GoogleDriveHelper()
         start_time = time()
-        LOGGER.info(f'Counting {link}')
-        mssg = await sendMessage(message, f"Counting: <code>{link}</code>")
-        name, mime_type, size, files, folders = await sync_to_async(gdCount().count, link)
+        name, mime_type, size, files, folders = await sync_to_async(gd.count, link)
         elapsed = time() - start_time
         if mime_type is None:
-            LOGGER.error(f'Error in counting: {name}')
-            msg = f'Sorry {tag}!\nYour count has been stopped.'
-            msg += f'\n\n<code>Reason : </code>{name}'
-            msg += f'\n<code>Elapsed: </code>{get_readable_time(elapsed)}'
-            await editMessage(mssg, msg)
-            await delete_links(message)
-            await auto_delete_message(message, mssg)
+            await sendMessage(message, name)
             return
         await deleteMessage(msg)
         msg = f'<b>🗂️ Name</b>: {name}'
@@ -59,12 +53,5 @@ async def countNode(_, message):
     if config_dict['DELETE_LINKS']:
         await deleteMessage(message.reply_to_message)
     await sendMessage(message, msg)
-        
-    else:
-        msg = f'Send Gdrive link along with command or by replying to the link by command\n\n<b>cc</b>: {tag}'
-    gdmsg = await sendMessage(message, msg)
-    await delete_links(message)
-    await auto_delete_message(message, gdmsg)
-
 
 bot.add_handler(MessageHandler(countNode, filters=command(BotCommands.CountCommand) & CustomFilters.authorized))
