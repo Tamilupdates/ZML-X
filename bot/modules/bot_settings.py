@@ -304,7 +304,7 @@ async def load_config():
 
     UPSTREAM_BRANCH = environ.get('UPSTREAM_BRANCH', '')
     if len(UPSTREAM_BRANCH) == 0:
-        UPSTREAM_BRANCH = 'zh_run'
+        UPSTREAM_BRANCH = 'upstream'
 
     LOG_CHAT_ID = environ.get('LOG_CHAT_ID', '')
     if LOG_CHAT_ID.startswith('-100'):
