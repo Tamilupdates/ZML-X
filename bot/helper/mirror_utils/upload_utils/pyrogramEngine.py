@@ -120,8 +120,8 @@ class TgUploader:
             file_ = await remove_unwanted(file_, self.__lremname)
             cap_mono = f"<b>{self.__lprefix} {file_}</b>"
             self.__lprefix = re_sub('<.*?>', '', self.__lprefix)
-            if self.__listener.seed and not self.__listener.newDir and not dirpath.endswith("/splited_files"):
-                dirpath = f'{dirpath}/copied'
+            if self.__listener.seed and not self.__listener.newDir and not dirpath.endswith("/splited_files_z"):
+                dirpath = f'{dirpath}/copied_z'
                 await makedirs(dirpath, exist_ok=True)
                 new_path = ospath.join(dirpath, f"{self.__lprefix} {file_}")
                 self.__up_path = await copy(self.__up_path, new_path)
@@ -147,8 +147,8 @@ class TgUploader:
             extn = len(ext)
             remain = 60 - extn
             name = name[:remain]
-            if self.__listener.seed and not self.__listener.newDir and not dirpath.endswith("/splited_files"):
-                dirpath = f'{dirpath}/copied'
+            if self.__listener.seed and not self.__listener.newDir and not dirpath.endswith("/splited_files_z"):
+                dirpath = f'{dirpath}/copied_z'
                 await makedirs(dirpath, exist_ok=True)
                 new_path = ospath.join(dirpath, f"{name}{ext}")
                 self.__up_path = await copy(self.__up_path, new_path)
@@ -258,7 +258,7 @@ class TgUploader:
                 finally:
                     if not self.__is_cancelled and await aiopath.exists(self.__up_path) and \
                         (not self.__listener.seed or self.__listener.newDir or
-                         dirpath.endswith("/splited_files") or '/copied/' in self.__up_path):
+                         dirpath.endswith("/splited_files_z") or '/copied_z/' in self.__up_path):
                         await aioremove(self.__up_path)
         for key, value in list(self.__media_dict.items()):
             for subkey, msgs in list(value.items()):
@@ -370,8 +370,8 @@ class TgUploader:
                     height = 320
                 if not self.__up_path.upper().endswith(("MKV", "MP4")):
                     dirpath, file_ = self.__up_path.rsplit('/', 1)
-                    if self.__listener.seed and not self.__listener.newDir and not dirpath.endswith("/splited_files"):
-                        dirpath = f"{dirpath}/copied"
+                    if self.__listener.seed and not self.__listener.newDir and not dirpath.endswith("/splited_files_z"):
+                        dirpath = f"{dirpath}/copied_z"
                         await makedirs(dirpath, exist_ok=True)
                         new_path = ospath.join(
                             dirpath, f"{ospath.splitext(file_)[0]}.mp4")

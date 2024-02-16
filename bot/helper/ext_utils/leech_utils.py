@@ -119,7 +119,7 @@ async def take_ss(video_file, duration):
 
 async def split_file(path, size, dirpath, split_size, listener, start_time=0, i=1, inLoop=False, multi_streams=True):
     if listener.seed and not listener.newDir:
-        dirpath = f"{dirpath}/splited_files"
+        dirpath = f"{dirpath}/splited_files_z"
         await makedirs(dirpath, exist_ok=True)
     user_id = listener.message.from_user.id
     user_dict = user_data.get(user_id, {})
