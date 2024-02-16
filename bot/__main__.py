@@ -56,7 +56,7 @@ async def start(_, message):
         msg += f'Validity: {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
         return await sendMessage(message, msg)
     elif config_dict['DM_MODE'] and message.chat.type != message.chat.type.SUPERGROUP:
-        start_string = f'''<b>This bot can leech all your links to telegram files upto 4GB Supported!</b>'''
+        start_string = f'''<b>This bot can leech all your links to telegram files upto 4GB Supported!\n\nJOIN UPDATES: @KPSBots 🔥</b>'''
     elif not config_dict['DM_MODE'] and message.chat.type != message.chat.type.SUPERGROUP:
         start_string = 'Sorry, you cannot use me here!\n' \
                        'Thank You'

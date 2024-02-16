@@ -85,7 +85,7 @@ def bot_sys_stats():
             extr += 1
         elif status == MirrorStatus.STATUS_SEEDING:
             seed += 1
-    bmsg = f'______Bot Info______\n\n'
+    bmsg = f'Bot Statistics\n\n'
     bmsg += f'C: {cpup}% | R: {ramp}% | D: {disk}%\n\n'
     bmsg += f'T : {totl} | F : {free} | Q : {inqu}\n'
     bmsg += f'DL: {dwld} | UL: {upld} | SD: {seed}\n'
@@ -250,15 +250,15 @@ async def send_bot_limits(_, query):
     BMT = 'Unlimited' if config_dict['QUEUE_ALL']       == '' else config_dict['QUEUE_ALL']
 
     bot_limit = f'<b><i><u>Bot Limitations</u></i></b>\n' \
-                f'<code>Torrent   : {TOR}</code> <b>GB</b>\n' \
-                f'<code>G-Drive   : {GDL}</code> <b>GB</b>\n' \
-                f'<code>Yt-Dlp    : {YTD}</code> <b>GB</b>\n' \
-                f'<code>Direct    : {DIR}</code> <b>GB</b>\n' \
-                f'<code>Clone     : {CLL}</code> <b>GB</b>\n' \
-                f'<code>Leech     : {TGL}</code> <b>GB</b>\n' \
-                f'<code>MEGA      : {MGA}</code> <b>GB</b>\n\n' \
-                f'<code>User Tasks: {UMT}</code>\n' \
-                f'<code>Bot Tasks : {BMT}</code>'
+                f'<b>Torrent   : {TOR}</b> <b>GB</b>\n' \
+                f'<b>G-Drive   : {GDL}</b> <b>GB</b>\n' \
+                f'<b>Yt-Dlp    : {YTD}</b> <b>GB</b>\n' \
+                f'<b>Direct    : {DIR}</b> <b>GB</b>\n' \
+                f'<b>Clone     : {CLL}</b> <b>GB</b>\n' \
+                f'<b>Leech     : {TGL}</b> <b>GB</b>\n' \
+                f'<b>MEGA      : {MGA}</b> <b>GB</b>\n\n' \
+                f'<b>User Tasks: {UMT}</b>\n' \
+                f'<b>Bot Tasks : {BMT}</b>'
 
     buttons.ibutton("Bot Stats",  "show_bot_stats")
     buttons.ibutton("Sys Stats",  "show_sys_stats")
