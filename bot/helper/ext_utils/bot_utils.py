@@ -29,17 +29,17 @@ PAGES           = 1
 PAGE_NO         = 1
 
 class MirrorStatus:
-    STATUS_UPLOADING    = "📤 Upload"
-    STATUS_DOWNLOADING  = "📥 Download"
-    STATUS_CLONING      = "♻️ Clone"
-    STATUS_QUEUEDL      = "💤 Queued Download"
-    STATUS_QUEUEUP      = "💤 Queued Upload"
-    STATUS_PAUSED       = "⛔️ Paused"
-    STATUS_ARCHIVING    = "🔐 Archive"
-    STATUS_EXTRACTING   = "📂 Extract"
-    STATUS_SPLITTING    = "✂️ Split"
-    STATUS_CHECKING     = "📝 CheckUp"
-    STATUS_SEEDING      = "🌧  Seed"
+    STATUS_UPLOADING    = "Uploading"
+    STATUS_DOWNLOADING  = "Downloading"
+    STATUS_CLONING      = "Cloning"
+    STATUS_QUEUEDL      = "Queued Download"
+    STATUS_QUEUEUP      = "Queued Upload"
+    STATUS_PAUSED       = "Paused"
+    STATUS_ARCHIVING    = "Archiving"
+    STATUS_EXTRACTING   = "Extracting"
+    STATUS_SPLITTING    = "Spliting"
+    STATUS_CHECKING     = "CheckingUp"
+    STATUS_SEEDING      = "Seeding"
 
 class setInterval:
     def __init__(self, interval, action):
@@ -92,8 +92,7 @@ def bt_selection_buttons(id_, isCanCncl=True):
         buttons.ubutton("Select Files", f"{BASE_URL}/app/files/{id_}")
         buttons.ibutton("Pincode", f"btsel pin {gid} {pincode}")
     else:
-        buttons.ubutton(
-            "Select Files", f"{BASE_URL}/app/files/{id_}?pin_code={pincode}")
+        buttons.ubutton("Select Files", f"{BASE_URL}/app/files/{id_}?pin_code={pincode}")
     if isCanCncl:
         buttons.ibutton("Cancel", f"btsel rm {gid} {id_}")
     buttons.ibutton("Done Selecting", f"btsel done {gid} {id_}")
@@ -102,7 +101,7 @@ def bt_selection_buttons(id_, isCanCncl=True):
 
 async def get_telegraph_list(telegraph_content):
     path = [(await telegraph.create_page(
-        title='Drive Search', content=content))["path"] for content in telegraph_content]
+        title='Z Drive Search', content=content))["path"] for content in telegraph_content]
     if len(path) > 1:
         await telegraph.edit_telegraph(path, telegraph_content)
     buttons = ButtonMaker()
@@ -116,8 +115,8 @@ def get_progress_bar_string(pct):
         pct = float(pct.strip('%'))
     p = min(max(pct, 0), 100)
     cFull = int(p // 10)
-    p_str = '●' * cFull
-    p_str += '○' * (10 - cFull)
+    p_str = '█' * cFull
+    p_str += '▒' * (10 - cFull)
     return f"{p_str}"
 
 
@@ -135,42 +134,44 @@ def get_readable_message():
         if reply_to := download.message.reply_to_message:
             tag = reply_to.from_user.mention
         elapsed = time() - download.extra_details['startTime']
-        if config_dict['DELETE_LINKS']:
-            msg += f"\n<code>{escape(f'{download.name()}')}</code>\n" if elapsed <= config_dict['AUTO_DELETE_MESSAGE_DURATION'] else ""
-        msg += f"<b>{download.status()}:</b> <code>{escape(f'{download.name()}')}</code>"
+        if config_dict['DELETE_LINKS'] and int(config_dict['AUTO_DELETE_MESSAGE_DURATION']) > 0:
+            msg += f"\n<b>File Name</b> » <i>{escape(f'{download.name()}')}</i>\n\n" if elapsed <= config_dict['AUTO_DELETE_MESSAGE_DURATION'] else ""
+        else:
+            msg += f"\n<b>File Name</b> » <i>{escape(f'{download.name()}')}</i>\n\n"
+        msg += f"⌑ <b>{download.status()}</b>"
         if download.status() not in [MirrorStatus.STATUS_SEEDING, MirrorStatus.STATUS_PAUSED,
                                      MirrorStatus.STATUS_QUEUEDL, MirrorStatus.STATUS_QUEUEUP]:
-            msg += f"\n [{get_progress_bar_string(download.progress())}] {download.progress()}"
-            msg += f"\n<b>⚡ Speed:</b> {download.speed()}"
-            msg += f"\n<b>🔄 Done:</b> {download.processed_bytes()} of {download.size()}"
-            msg += f"\n<b>⏳ ETA:</b> {download.eta()}"
-            msg += f"<b> | Elapsed:</b> {get_readable_time(elapsed)}"
-            msg += f"\n<b>⛓️ Engine:</b> {download.engine}"
+            msg += f" » {download.speed()}"
+            msg += f"\n⌑ {get_progress_bar_string(download.progress())} » {download.progress()}"
+            msg += f"\n⌑ <code>Done   </code>: {download.processed_bytes()} of {download.size()}"
+            msg += f"\n⌑ <code>ETA    </code>: {download.eta()}"
+            msg += f"\n⌑ <code>Past   </code>: {get_readable_time(elapsed)}"
+            msg += f"\n⌑ <code>ENG    </code>: {download.engine}"
             if hasattr(download, 'playList'):
                 try:
                     if playlist:=download.playList():
-                        msg += f"\n<b>YtList:</b> {playlist}"
+                        msg += f"\n⌑ <code>YtList </code>: {playlist}"
                 except:
                     pass
             if hasattr(download, 'seeders_num'):
                 try:
-                    msg += f"\n <b>🌱 Seeders:</b> {download.seeders_num()} | <b>🐌 Leechers:</b> {download.leechers_num()}"
+                    msg += f"\n⌑ <code>S/L    </code>: {download.seeders_num()}/{download.leechers_num()}"
                 except:
                     pass
         elif download.status() == MirrorStatus.STATUS_SEEDING:
-            msg += f"\n<b>📦 Size:</b> {download.size()}"
-            msg += f"\n<b>⚡ Speed:</b> {download.upload_speed()}"
-            msg += f"\n<b>🔺 Uploaded:</b> {download.uploaded_bytes()}"
-            msg += f"\n<b>📎 Ratio:</b> {download.ratio()}"
-            msg += f"\n<b>⏲️ Time:</b> {download.seeding_time()}"
+            msg += f"\n⌑ <code>Size     </code>» {download.size()}"
+            msg += f"\n⌑ <code>Speed    </code>» {download.upload_speed()}"
+            msg += f"\n⌑ <code>Uploaded </code>» {download.uploaded_bytes()}"
+            msg += f"\n⌑ <code>Ratio    </code>» {download.ratio()}"
+            msg += f"\n⌑ <code>Time     </code>» {download.seeding_time()}"
         else:
-            msg += f"\n<b>📦 Size:</b> {download.size()}"
+            msg += f"\n⌑ <code>Size   </code>: {download.size()}"
         if config_dict['DELETE_LINKS']:
-            msg += f"<b> | Mode:</b> {download.extra_details['mode']}"
+            msg += f"\n⌑ <code>Task   </code>: {download.extra_details['mode']}"
         else:
-            msg += f"\n<b>👤 User:</b> {tag}"
-        msg += f"<b> | Mode:</b> <a href='{download.message.link}'>{download.extra_details['mode']}</a>"
-        msg += f"\n<b>🚫 Cancel:</b> /{BotCommands.CancelMirror}_{download.gid()}\n\n"
+            msg += f"\n⌑ <code>Task   </code>: <a href='{download.message.link}'>{download.extra_details['mode']}</a>"
+        msg += f"\n⌑ <code>User   </code>: {tag}"
+        msg += f"\n⚠️ /{BotCommands.CancelMirror}_{download.gid()}\n\n"
     if len(msg) == 0:
         return None, None
     def convert_speed_to_bytes_per_second(spd):
@@ -191,13 +192,13 @@ def get_readable_message():
         elif tstatus == MirrorStatus.STATUS_UPLOADING or tstatus == MirrorStatus.STATUS_SEEDING:
             up_speed += speed_in_bytes_per_second
     msg += "____________________________"
-    msg += f"\n\n<b>💿 FREE: </b>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}"
-    msg += f"<b> | 🔻 DL: </b>{get_readable_file_size(dl_speed)}/s"
-    msg += f"\n<b>🟢 UP: </b>{get_readable_time(time() - botStartTime)}"
-    msg += f"<b> | 🔺 UL: </b>{get_readable_file_size(up_speed)}/s"
+    msg += f"\n<code>FREE: </code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}"
+    msg += f"<code> | DL: </code>{get_readable_file_size(dl_speed)}/s"
+    msg += f"\n<code>UPTM: </code>{get_readable_time(time() - botStartTime)}"
+    msg += f"<code> | UL: </code>{get_readable_file_size(up_speed)}/s"
     if tasks <= STATUS_LIMIT:
         buttons = ButtonMaker()
-        buttons.ibutton("Statistics", "status stats")
+        buttons.ibutton("BOT INFO", "status stats")
         button = buttons.build_menu(1)
     if tasks > STATUS_LIMIT:
         return get_pages(msg)
@@ -206,9 +207,9 @@ def get_readable_message():
 
 def get_pages(msg):
     buttons = ButtonMaker()
-    buttons.ibutton("⏪Previous", "status pre")
+    buttons.ibutton("⫷", "status pre")
     buttons.ibutton(f"{PAGE_NO}/{PAGES}", "status stats")
-    buttons.ibutton("Next⏩", "status nex")
+    buttons.ibutton("⫸", "status nex")
     button = buttons.build_menu(3)
     return msg, button
 
@@ -438,3 +439,28 @@ def new_thread(func):
         future = run_coroutine_threadsafe(func(*args, **kwargs), bot_loop)
         return future.result() if wait else future
     return wrapper
+
+
+async def set_commands(client):
+    if config_dict['SET_COMMANDS']:
+        await client.set_bot_commands([
+            BotCommand(f'{BotCommands.MirrorCommand[0]}', f'or /{BotCommands.MirrorCommand[1]} Mirror'),
+            BotCommand(f'{BotCommands.LeechCommand[0]}', f'or /{BotCommands.LeechCommand[1]} Leech'),
+            BotCommand(f'{BotCommands.QbMirrorCommand[0]}', f'or /{BotCommands.QbMirrorCommand[1]} Mirror torrent using qBittorrent'),
+            BotCommand(f'{BotCommands.QbLeechCommand[0]}', f'or /{BotCommands.QbLeechCommand[1]} Leech torrent using qBittorrent'),
+            BotCommand(f'{BotCommands.YtdlCommand[0]}', f'or /{BotCommands.YtdlCommand[1]} Mirror yt-dlp supported link'),
+            BotCommand(f'{BotCommands.YtdlLeechCommand[0]}', f'or /{BotCommands.YtdlLeechCommand[1]} Leech through yt-dlp supported link'),
+            BotCommand(f'{BotCommands.CloneCommand}', 'Copy file/folder to Drive'),
+            BotCommand(f'{BotCommands.CountCommand}', '[drive_url]: Count file/folder of Google Drive.'),
+            BotCommand(f'{BotCommands.StatusCommand[0]}', f'or /{BotCommands.StatusCommand[1]} Get mirror status message'),
+            BotCommand(f'{BotCommands.StatsCommand[0]}', f'{BotCommands.StatsCommand[1]} Check bot stats'),
+            BotCommand(f'{BotCommands.BtSelectCommand}', 'Select files to download only torrents'),
+            BotCommand(f'{BotCommands.CategorySelect}', 'Select category to upload only mirror'),
+            BotCommand(f'{BotCommands.CancelMirror}', 'Cancel a Task'),
+            BotCommand(f'{BotCommands.CancelAllCommand[0]}', f'Cancel all tasks which added by you or {BotCommands.CancelAllCommand[1]} to in bots.'),
+            BotCommand(f'{BotCommands.ListCommand}', 'Search in Drive'),
+            BotCommand(f'{BotCommands.SearchCommand}', 'Search in Torrent'),
+            BotCommand(f'{BotCommands.UserSetCommand}', 'Users settings'),
+            BotCommand(f'{BotCommands.HelpCommand}', 'Get detailed help'),
+        ])
+
