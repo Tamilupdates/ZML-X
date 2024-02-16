@@ -393,6 +393,8 @@ class MirrorLeechListener:
             await update_all_messages()
             await RCTransfer.upload(up_path, size)
 
+
+
     async def onUploadComplete(self, link, size, files, folders, mime_type, name, rclonePath=''):
         if DATABASE_URL and config_dict['STOP_DUPLICATE_TASKS'] and self.raw_url:
             await DbManager().remove_download(self.raw_url)
@@ -419,28 +421,27 @@ class MirrorLeechListener:
                         await sendMessage(self.logMessage,  msg)
                 else:
                     fmsg = '\n'
-                    for index, (link, name) in enumerate(files.items(), start=1):
-                        fmsg += f"{index}. <a href='{link}'>{name}</a>\n"
-                        if len(fmsg.encode() + msg.encode()) > 4000:
-                            if self.logMessage:
-                                await sendMessage(self.logMessage, lmsg + msg + fmsg)
-                            await sendMessage(self.message, lmsg + msg + fmsg)
-                            await sleep(1)
-                            fmsg = '\n'
+                    fmsg+= f'<b>👤 Added By </b>: {self.tag}'
+                    if len(fmsg.encode() + msg.encode()) > 4000:
+                        if self.logMessage:
+                            await sendMessage(self.logMessage, msg + fmsg)
+                        await sendMessage(self.message, msg + fmsg)
+                        await sleep(1)
+                        fmsg = '\n'
                     if fmsg != '\n':
                         if self.logMessage:
-                            await sendMessage(self.logMessage, lmsg + msg + fmsg)
-                        await sendMessage(self.message, lmsg + msg + fmsg)
+                            await sendMessage(self.logMessage, msg + fmsg)
+                        await sendMessage(self.message, msg + fmsg)
             else:
                 if not files:
                     await sendMessage(self.message, gmsg + msg + msg_)
                     if self.logMessage:
-                        await sendMessage(self.logMessage, lmsg + msg)
+                        await sendMessage(self.logMessage, msg)
                 elif self.dmMessage and not config_dict['LEECH_LOG']:
-                    await sendMessage(self.dmMessage, lmsg + msg)
+                    await sendMessage(self.dmMessage, msg)
                     await sendMessage(self.message, gmsg + msg + msg_)
                     if self.logMessage:
-                        await sendMessage(self.logMessage, lmsg + msg)
+                        await sendMessage(self.logMessage, msg)
                 else:
                     fmsg = '\n'
                     fmsg+= f'<b>👤 Added By </b>: {self.tag}'
@@ -464,10 +465,10 @@ class MirrorLeechListener:
                 await start_from_queued()
                 return
         else:
-            msg += f'\n<code>Type            </code>: {mime_type}'
+            msg += f'\n<b>Type            </b>: {mime_type}'
             if mime_type == "Folder":
-                msg += f'\n<code>Sub Folders     </code>: {folders}'
-                msg += f'\n<code>Files           </code>: {files}'
+                msg += f'\n<b>Sub Folders     </b>: {folders}'
+                msg += f'\n<b>Files           </b>: {files}'
             if link or rclonePath and config_dict['RCLONE_SERVE_URL']:
                 buttons = ButtonMaker()
                 if link:
@@ -485,32 +486,34 @@ class MirrorLeechListener:
                 elif not rclonePath:
                     INDEX_URL = self.index_link if self.drive_id else config_dict['INDEX_URL']
                     if INDEX_URL:
-                        share_url = f"{INDEX_URL}findpath?id={dir_id}"
+                        url_path = url_quote(f'{name}')
+                        share_url = f'{INDEX_URL}/{url_path}'
                         if mime_type == "Folder":
+                            share_url += '/'
                             buttons.ubutton("📁 Direct Link", share_url)
                         else:
                             buttons.ubutton("🔗 Direct Link", share_url)
-                            if mime_type.startswith(("image", "video", "audio")):
-                                share_urls = f"{INDEX_URL}findpath?id={dir_id}&view=true"
+                            if mime_type.startswith(('image', 'video', 'audio')):
+                                share_urls = f'{INDEX_URL}/{url_path}?a=view'
                                 buttons.ubutton("🌐 View Link", share_urls)
                 buttons = extra_btns(buttons)
                 if self.dmMessage:
-                    await sendMessage(self.dmMessage, lmsg + msg + _msg, buttons.build_menu(2))
+                    await sendMessage(self.dmMessage, msg + _msg, buttons.build_menu(2))
                     await sendMessage(self.message, gmsg + msg + msg_)
                 else:
-                    await sendMessage(self.message, lmsg + msg + _msg, buttons.build_menu(2))
+                    await sendMessage(self.message, msg + _msg, buttons.build_menu(2))
                 if self.logMessage:
                     if link.startswith("https://drive.google.com/") and config_dict['DISABLE_DRIVE_LINK']:
                         buttons.ubutton("♻️ Drive Link", link, 'header')
-                    await sendMessage(self.logMessage, lmsg + msg + _msg, buttons.build_menu(2))
+                    await sendMessage(self.logMessage, msg + _msg, buttons.build_menu(2))
             else:
                 if self.dmMessage:
                     await sendMessage(self.message, gmsg + msg + msg_)
-                    await sendMessage(self.dmMessage, lmsg + msg + _msg)
+                    await sendMessage(self.dmMessage, msg + _msg)
                 else:
-                    await sendMessage(self.message, lmsg + msg + _msg + msg_)
+                    await sendMessage(self.message, msg + _msg + msg_)
                 if self.logMessage:
-                    await sendMessage(self.logMessage, lmsg + msg + _msg)
+                    await sendMessage(self.logMessage, msg + _msg)
             if self.seed and not self.isClone:
                 if self.newDir:
                     await clean_target(self.newDir)
@@ -563,6 +566,8 @@ class MirrorLeechListener:
             await DbManager().remove_download(self.raw_url)
         if self.isSuperGroup and config_dict['INCOMPLETE_TASK_NOTIFIER'] and DATABASE_URL:
             await DbManager().rm_complete_task(self.message.link)
+        if config_dict['DELETE_LINKS']:
+            await auto_delete_message(self.message, tlmsg)
 
         async with queue_dict_lock:
             if self.uid in queued_dl:
@@ -583,7 +588,6 @@ class MirrorLeechListener:
             await clean_download(self.dir)
             if self.newDir:
                 await clean_download(self.newDir)
-        await auto_delete_message(self.message, tlmsg)
 
     async def onUploadError(self, error):
         async with download_dict_lock:
@@ -607,6 +611,8 @@ class MirrorLeechListener:
             await DbManager().remove_download(self.raw_url)
         if self.isSuperGroup and config_dict['INCOMPLETE_TASK_NOTIFIER'] and DATABASE_URL:
             await DbManager().rm_complete_task(self.message.link)
+        if config_dict['DELETE_LINKS']:
+            await auto_delete_message(self.message, tlmsg)
 
         async with queue_dict_lock:
             if self.uid in queued_dl:
@@ -627,4 +633,3 @@ class MirrorLeechListener:
             await clean_download(self.dir)
             if self.newDir:
                 await clean_download(self.newDir)
-        await auto_delete_message(self.message, tlmsg)
