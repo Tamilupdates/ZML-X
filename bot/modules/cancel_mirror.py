@@ -69,7 +69,7 @@ async def cancel_all(status, info, listOfTasks):
     msg = info[1]
     tag = info[3]
     success = 0
-    failed = 
+    failed = 0
     _msg = f"<b>💡 User ID</b>: {user_id}\n" if user_id else "<b>Everyone</b>\n"
     _msg += f"<b>🔄 Status</b>: {status}\n"
     _msg += f"<b>📂 Total</b>: {len(listOfTasks)}\n"
