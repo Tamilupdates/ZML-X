@@ -145,7 +145,6 @@ async def stats(_, message, edit_mode=False):
                 f'<b>Total:</b> <code>{total}</code> | <b>Free:</b> <code>{free}</code>'
 
     buttons.ibutton("Sys Stats",  "show_sys_stats")
-    buttons.ibutton("Repo Stats", "show_repo_stats")
     buttons.ibutton("Bot Limits", "show_bot_limits")
     buttons.ibutton("Close", "close_signal")
     sbtns = buttons.build_menu(2)
@@ -158,7 +157,6 @@ async def send_bot_stats(_, query):
     buttons = ButtonMaker()
     bot_stats, _ = await stats(_, query.message, edit_mode=True)
     buttons.ibutton("Sys Stats",  "show_sys_stats")
-    buttons.ibutton("Repo Stats", "show_repo_stats")
     buttons.ibutton("Bot Limits", "show_bot_limits")
     buttons.ibutton("Close",      "close_signal")
     sbtns = buttons.build_menu(2)
@@ -170,7 +168,6 @@ async def send_sys_stats(_, query):
     buttons = ButtonMaker()
     _, sys_stats = await stats(_, query.message, edit_mode=True)
     buttons.ibutton("Bot Stats",  "show_bot_stats")
-    buttons.ibutton("Repo Stats", "show_repo_stats")
     buttons.ibutton("Bot Limits", "show_bot_limits")
     buttons.ibutton("Close",      "close_signal")
     sbtns = buttons.build_menu(2)
@@ -265,7 +262,6 @@ async def send_bot_limits(_, query):
 
     buttons.ibutton("Bot Stats",  "show_bot_stats")
     buttons.ibutton("Sys Stats",  "show_sys_stats")
-    buttons.ibutton("Repo Stats", "show_repo_stats")
     buttons.ibutton("Close", "close_signal")
     sbtns = buttons.build_menu(2)
     await query.answer()
@@ -286,6 +282,5 @@ bot.add_handler(MessageHandler(stats,   filters=command(BotCommands.StatsCommand
 bot.add_handler(CallbackQueryHandler(send_close_signal, filters=regex("^close_signal")))
 bot.add_handler(CallbackQueryHandler(send_bot_stats,    filters=regex("^show_bot_stats")))
 bot.add_handler(CallbackQueryHandler(send_sys_stats,    filters=regex("^show_sys_stats")))
-bot.add_handler(CallbackQueryHandler(send_repo_stats,   filters=regex("^show_repo_stats")))
 bot.add_handler(CallbackQueryHandler(send_bot_limits,   filters=regex("^show_bot_limits")))
 bot.add_handler(CallbackQueryHandler(status_pages, filters=regex("^status")))
