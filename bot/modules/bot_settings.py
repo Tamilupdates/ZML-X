@@ -21,7 +21,7 @@ from bot import (DATABASE_URL, GLOBAL_EXTENSION_FILTER, IS_PREMIUM_USER,
                  qbit_options, shorteneres_list, status_reply_dict_lock,
                  user_data)
 from bot.helper.ext_utils.bot_utils import (get_readable_file_size, new_thread,
-                                            set_commands, setInterval,
+                                            SET_BOT_COMMANDS, setInterval,
                                             sync_to_async)
 from bot.helper.ext_utils.db_handler import DbManager
 from bot.helper.ext_utils.task_manager import start_from_queued
@@ -363,8 +363,8 @@ async def load_config():
     DISABLE_LEECH = environ.get('DISABLE_LEECH', '')
     DISABLE_LEECH = DISABLE_LEECH.lower() == 'true'
 
-    SET_COMMANDS = environ.get('SET_COMMANDS', '')
-    SET_COMMANDS = SET_COMMANDS.lower() == 'true'
+    SET_BOT_COMMANDS = environ.get('SET_BOT_COMMANDS', '')
+    SET_BOT_COMMANDS = SET_BOT_COMMANDS.lower() == 'true'
 
     REQUEST_LIMITS = environ.get('REQUEST_LIMITS', '')
     REQUEST_LIMITS = '' if len(
@@ -518,7 +518,7 @@ async def load_config():
                         'SUDO_USERS': SUDO_USERS,
                         'STORAGE_THRESHOLD': STORAGE_THRESHOLD,
                         'STOP_DUPLICATE_TASKS': STOP_DUPLICATE_TASKS,
-                        'SET_COMMANDS': SET_COMMANDS,
+                        'SET_BOT_COMMANDS': SET_BOT_COMMANDS,
                         'TELEGRAM_API': TELEGRAM_API,
                         'TELEGRAM_HASH': TELEGRAM_HASH,
                         'TORRENT_TIMEOUT': TORRENT_TIMEOUT,
@@ -714,8 +714,8 @@ async def edit_variable(_, message, pre_message, key):
         await start_from_queued()
     elif key in ['RCLONE_SERVE_URL', 'RCLONE_SERVE_PORT', 'RCLONE_SERVE_USER', 'RCLONE_SERVE_PASS']:
         await rclone_serve_booter()
-    elif key == 'SET_COMMANDS':
-        await set_commands(client)
+    elif key == 'SET_BOT_COMMANDS':
+        await SET_BOT_COMMANDS(client)
 
 
 async def edit_aria(_, message, pre_message, key):
