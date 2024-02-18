@@ -439,9 +439,9 @@ def new_thread(func):
     return wrapper
 
 
-async def SET_BOT_COMMANDS(client):
-    if config_dict['SET_BOT_COMMANDS']:
-        await client.set_bot_commands([
+async def SET_COMMANDS(client):
+    if config_dict['SET_COMMANDS']:
+        await client.SET_COMMANDS([
             BotCommand(f'{BotCommands.MirrorCommand[0]}', f'or /{BotCommands.MirrorCommand[1]} Mirror'),
             BotCommand(f'{BotCommands.LeechCommand[0]}', f'or /{BotCommands.LeechCommand[1]} Leech'),
             BotCommand(f'{BotCommands.QbMirrorCommand[0]}', f'or /{BotCommands.QbMirrorCommand[1]} Mirror torrent using qBittorrent'),
