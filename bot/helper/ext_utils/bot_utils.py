@@ -130,9 +130,10 @@ def get_readable_message():
         globals()['STATUS_START'] = STATUS_LIMIT * (PAGES - 1)
         globals()['PAGE_NO'] = PAGES
     for download in list(download_dict.values())[STATUS_START:STATUS_LIMIT+STATUS_START]:
-        tag = download.message.from_user.mention
-        if reply_to := download.message.reply_to_message:
-            tag = reply_to.from_user.mention
+        try:
+            tag = download.message.reply_to_message.from_user.mention
+        except AttributeError:
+            tag = download.message.from_user.mention if download.message.from_user else "Anonymous"
         elapsed = time() - download.extra_details['startTime']
         if config_dict['DELETE_LINKS']:
             msg += f"\n<code>{escape(f'{download.name()}')}</code>\n" if elapsed <= config_dict['AUTO_DELETE_MESSAGE_DURATION'] else ""
